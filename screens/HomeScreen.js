@@ -44,10 +44,7 @@ const HomeScreen = ({ navigation }) => {
           <Text style={styles.productUnit}>7pcs, Priceg</Text>
           <View style={styles.priceRow}>
             <Text style={styles.price}>$4.99</Text>
-            <TouchableOpacity 
-              style={styles.addBtn} 
-              onPress={() => navigation.navigate('ProductDetail')}
-            >
+            <TouchableOpacity style={styles.addBtn} onPress={() => navigation.navigate('ProductDetail')}>
               <Entypo name="plus" size={20} color="white" />
             </TouchableOpacity>
           </View>
@@ -59,16 +56,46 @@ const HomeScreen = ({ navigation }) => {
           <Text style={styles.productUnit}>1kg, Priceg</Text>
           <View style={styles.priceRow}>
             <Text style={styles.price}>$4.99</Text>
-            <TouchableOpacity 
-      style={styles.addBtn} 
-      onPress={() => navigation.navigate('ProductDetail')}>
+            <TouchableOpacity style={styles.addBtn} onPress={() => navigation.navigate('ProductDetail')}>
               <Entypo name="plus" size={20} color="white" />
             </TouchableOpacity>
           </View>
         </View>
       </ScrollView>
 
-      {/* 5. GROCERIES SECTION*/}
+      {/* 5. BEST SELLING (Phần bổ sung) */}
+      <View style={styles.sectionHeader}>
+        <Text style={styles.sectionTitle}>Best Selling</Text>
+        <TouchableOpacity><Text style={styles.seeAll}>See all</Text></TouchableOpacity>
+      </View>
+
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.horizontalList}>
+        <View style={styles.productCard}>
+          <Image source={require('../assets/bell_pepper.png')} style={styles.productImg} />
+          <Text style={styles.productName}>Bell Pepper Red</Text>
+          <Text style={styles.productUnit}>1kg, Priceg</Text>
+          <View style={styles.priceRow}>
+            <Text style={styles.price}>$4.99</Text>
+            <TouchableOpacity style={styles.addBtn}>
+              <Entypo name="plus" size={20} color="white" />
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        <View style={[styles.productCard, { marginLeft: 15 }]}>
+          <Image source={require('../assets/ginger.png')} style={styles.productImg} />
+          <Text style={styles.productName}>Ginger</Text>
+          <Text style={styles.productUnit}>250g, Priceg</Text>
+          <View style={styles.priceRow}>
+            <Text style={styles.price}>$4.99</Text>
+            <TouchableOpacity style={styles.addBtn}>
+              <Entypo name="plus" size={20} color="white" />
+            </TouchableOpacity>
+          </View>
+        </View>
+      </ScrollView>
+
+      {/* 6. GROCERIES */}
       <View style={styles.sectionHeader}>
         <Text style={styles.sectionTitle}>Groceries</Text>
         <TouchableOpacity><Text style={styles.seeAll}>See all</Text></TouchableOpacity>
@@ -85,8 +112,8 @@ const HomeScreen = ({ navigation }) => {
         </View>
       </ScrollView>
 
-      {/* 6. BEST SELLING / MEAT LIST */}
-      <View style={styles.productListRow}>
+      {/* 7. MEAT / BEEF LIST */}
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={[styles.horizontalList, { marginTop: 15 }]}>
         <View style={styles.productCard}>
           <Image source={require('../assets/beef_bone.png')} style={styles.productImg} />
           <Text style={styles.productName}>Beef Bone</Text>
@@ -110,9 +137,8 @@ const HomeScreen = ({ navigation }) => {
             </TouchableOpacity>
           </View>
         </View>
-      </View>
+      </ScrollView>
 
-      {/* Khoảng đệm cuối trang */}
       <View style={{ height: 100 }} />
     </ScrollView>
   );
@@ -124,24 +150,55 @@ const styles = StyleSheet.create({
   logo: { width: 25, height: 30, marginBottom: 10, resizeMode: 'contain' },
   locationRow: { flexDirection: 'row', alignItems: 'center' },
   locationText: { fontSize: 18, fontWeight: 'bold', color: '#4C4C4C', marginLeft: 5 },
-  searchContainer: { flexDirection: 'row', backgroundColor: '#F2F3F2', padding: 15, borderRadius: 15, marginTop: 20, alignItems: 'center' },
+  searchContainer: { 
+    flexDirection: 'row', 
+    backgroundColor: '#F2F3F2', 
+    padding: 15, 
+    borderRadius: 15, 
+    marginTop: 20, 
+    alignItems: 'center' 
+  },
   searchInput: { marginLeft: 10, flex: 1, fontSize: 16 },
-  banner: { width: '100%', height: 115, borderRadius: 15, marginTop: 20, resizeMode: 'contain' },
-  sectionHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginVertical: 20 },
-  sectionTitle: { fontSize: 24, fontWeight: 'bold' },
-  seeAll: { color: '#53B175', fontWeight: '600' },
+  banner: { width: '100%', height: 115, borderRadius: 15, marginTop: 20, resizeMode: 'cover' },
+  sectionHeader: { 
+    flexDirection: 'row', 
+    justifyContent: 'space-between', 
+    alignItems: 'center', 
+    marginTop: 25,
+    marginBottom: 15 
+  },
+  sectionTitle: { fontSize: 24, fontWeight: 'bold', color: '#181725' },
+  seeAll: { color: '#53B175', fontWeight: '600', fontSize: 16 },
   horizontalList: { marginBottom: 10 },
-  productCard: { width: 173, padding: 15, borderRadius: 18, borderWidth: 1, borderColor: '#E2E2E2', backgroundColor: 'white' },
+  productCard: { 
+    width: 173, 
+    padding: 15, 
+    borderRadius: 18, 
+    borderWidth: 1, 
+    borderColor: '#E2E2E2', 
+    backgroundColor: 'white' 
+  },
   productImg: { width: 100, height: 80, alignSelf: 'center', resizeMode: 'contain' },
-  productName: { fontWeight: 'bold', fontSize: 16, marginTop: 10 },
-  productUnit: { color: '#7C7C7C', fontSize: 14 },
-  priceRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 10 },
-  price: { fontSize: 18, fontWeight: 'bold' },
-  addBtn: { backgroundColor: '#53B175', padding: 10, borderRadius: 15 },
-  categoryCard: { flexDirection: 'row', alignItems: 'center', padding: 15, borderRadius: 18, width: 250, height: 105 },
+  productName: { fontWeight: 'bold', fontSize: 16, marginTop: 10, color: '#181725' },
+  productUnit: { color: '#7C7C7C', fontSize: 14, marginTop: 3 },
+  priceRow: { 
+    flexDirection: 'row', 
+    justifyContent: 'space-between', 
+    alignItems: 'center', 
+    marginTop: 15 
+  },
+  price: { fontSize: 18, fontWeight: 'bold', color: '#181725' },
+  addBtn: { backgroundColor: '#53B175', padding: 12, borderRadius: 17 },
+  categoryCard: { 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    padding: 15, 
+    borderRadius: 18, 
+    width: 250, 
+    height: 105 
+  },
   categoryImg: { width: 70, height: 70, resizeMode: 'contain' },
   categoryName: { fontSize: 20, fontWeight: 'bold', marginLeft: 15, color: '#3E423F' },
-  productListRow: { flexDirection: 'row', marginBottom: 20 }
 });
 
 export default HomeScreen;
