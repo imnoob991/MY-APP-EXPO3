@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, SafeAreaView, Platform, StatusBar } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, SafeAreaView, Platform, StatusBar, Modal, Pressable } from 'react-native';
 import { Ionicons, AntDesign } from '@expo/vector-icons';
 
 const CART_DATA = [
@@ -9,12 +9,19 @@ const CART_DATA = [
   { id: '4', title: 'Ginger', weight: '250gm, Price', price: '$2.99', img: require('../assets/ginger.png') },
 ];
 
-export default function CartScreen() {
+// Nhận navigation từ Stack để chuyển màn hình
+export default function CartScreen({ navigation }) {
+  const [modalVisible, setModalVisible] = useState(false);
+
   return (
     <SafeAreaView style={styles.safeArea}>
-      <Text style={styles.header}>My Cart</Text>
+      {/* Header cố định */}
+      <View style={styles.headerContainer}>
+        <Text style={styles.header}>My Cart</Text>
+      </View>
       
-      <View style={styles.container}>
+      {/* Danh sách sản phẩm */}
+      <View style={{ flex: 1 }}>
         <FlatList
           data={CART_DATA}
           keyExtractor={item => item.id}
@@ -39,25 +46,82 @@ export default function CartScreen() {
               </View>
             </View>
           )}
-          // Quan trọng: Để 0 để danh sách chạm sát phần footer bên dưới
-          contentContainerStyle={{ paddingBottom: 0 }} 
+          contentContainerStyle={{ paddingBottom: 20 }} 
         />
-
-        <View style={styles.footer}>
-          <TouchableOpacity style={styles.checkoutBtn}>
-            <Text style={styles.checkoutText}>Go to Checkout</Text>
-            <View style={styles.badge}><Text style={styles.badgeText}>$12.96</Text></View>
-          </TouchableOpacity>
-        </View>
       </View>
+
+      {/* Footer chứa nút Checkout */}
+      <View style={styles.footer}>
+        <TouchableOpacity style={styles.checkoutBtn} onPress={() => setModalVisible(true)}>
+          <Text style={styles.checkoutText}>Go to Checkout</Text>
+          <View style={styles.badge}>
+            <Text style={styles.badgeText}>$12.96</Text>
+          </View>
+        </TouchableOpacity>
+      </View>
+
+      {/* Modal Checkout */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <Pressable style={{ flex: 1 }} onPress={() => setModalVisible(false)} />
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Checkout</Text>
+              <TouchableOpacity onPress={() => setModalVisible(false)}>
+                <Ionicons name="close" size={24} color="black" />
+              </TouchableOpacity>
+            </View>
+
+            <CheckoutRow label="Delivery" value="Select Method" />
+            <CheckoutRow label="Payment" isIcon={true} />
+            <CheckoutRow label="Promo Code" value="Pick discount" />
+            <CheckoutRow label="Total Cost" value="$13.97" />
+
+            <Text style={styles.termsText}>
+              By placing an order you agree to our 
+              <Text style={{ fontWeight: 'bold', color: '#181725' }}> Terms</Text> And <Text style={{ fontWeight: 'bold', color: '#181725' }}>Conditions</Text>
+            </Text>
+
+            {/* NÚT PLACE ORDER: Đóng modal và chuyển màn hình */}
+            <TouchableOpacity 
+              style={styles.placeOrderBtn}
+              onPress={() => {
+                setModalVisible(false);
+                navigation.navigate('OrderSuccess');
+              }}
+            >
+              <Text style={styles.placeOrderText}>Place Order</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
 
+const CheckoutRow = ({ label, value, isIcon }) => (
+  <TouchableOpacity style={styles.rowItem}>
+    <Text style={styles.rowLabel}>{label}</Text>
+    <View style={styles.rowRight}>
+      {isIcon ? (
+        <Image source={{uri: 'https://img.icons8.com/color/48/mastercard.png'}} style={{width: 24, height: 15, marginRight: 10}} />
+      ) : (
+        <Text style={styles.rowValue}>{value}</Text>
+      )}
+      <Ionicons name="chevron-forward" size={18} color="black" />
+    </View>
+  </TouchableOpacity>
+);
+
 const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: 'white', paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0 },
-  header: { fontSize: 18, fontWeight: 'bold', textAlign: 'center', paddingVertical: 15, borderBottomWidth: 0.5, borderColor: '#E2E2E2' },
-  container: { flex: 1 },
+  headerContainer: { borderBottomWidth: 0.5, borderColor: '#E2E2E2', backgroundColor: 'white' },
+  header: { fontSize: 18, fontWeight: 'bold', textAlign: 'center', paddingVertical: 15 },
   cartItem: { flexDirection: 'row', paddingHorizontal: 20, paddingVertical: 15, borderBottomWidth: 0.5, borderColor: '#E2E2E2', alignItems: 'center' },
   img: { width: 70, height: 70, resizeMode: 'contain' },
   info: { flex: 1, marginLeft: 20 },
@@ -71,12 +135,28 @@ const styles = StyleSheet.create({
   
   footer: {
     paddingHorizontal: 20,
-    paddingTop: 10, // Giảm khoảng cách này để nút sát danh sách hơn
-    paddingBottom: 90, // Để nút nổi lên trên thanh TabBar
+    paddingTop: 15,
+    paddingBottom: 20, 
     backgroundColor: 'white',
+    // Khoảng cách này để né thanh TabBar
+    marginBottom: Platform.OS === 'ios' ? 90 : 80, 
+    borderTopWidth: 0.5,
+    borderColor: '#F2F2F2',
   },
   checkoutBtn: { backgroundColor: '#53B175', height: 65, borderRadius: 18, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' },
   checkoutText: { color: 'white', fontWeight: 'bold', fontSize: 18 },
-  badge: { position: 'absolute', right: 20, backgroundColor: '#489E67', paddingHorizontal: 8, paddingVertical: 2, borderRadius: 5 },
-  badgeText: { color: 'white', fontSize: 12, fontWeight: 'bold' }
+  badge: { position: 'absolute', right: 20, backgroundColor: '#489E67', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 6 },
+  badgeText: { color: 'white', fontSize: 14, fontWeight: 'bold' },
+
+  modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
+  modalContent: { backgroundColor: 'white', borderTopLeftRadius: 30, borderTopRightRadius: 30, padding: 25, paddingBottom: 40 },
+  modalHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, borderBottomWidth: 0.5, borderColor: '#E2E2E2', paddingBottom: 15 },
+  modalTitle: { fontSize: 20, fontWeight: 'bold' },
+  rowItem: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 15, borderBottomWidth: 0.5, borderColor: '#E2E2E2' },
+  rowLabel: { fontSize: 16, color: '#7C7C7C', fontWeight: '500' },
+  rowRight: { flexDirection: 'row', alignItems: 'center' },
+  rowValue: { fontSize: 16, fontWeight: '600', marginRight: 10 },
+  termsText: { fontSize: 13, color: '#7C7C7C', marginTop: 20, lineHeight: 20 },
+  placeOrderBtn: { backgroundColor: '#53B175', height: 65, borderRadius: 18, justifyContent: 'center', alignItems: 'center', marginTop: 25 },
+  placeOrderText: { color: 'white', fontWeight: 'bold', fontSize: 18 },
 });

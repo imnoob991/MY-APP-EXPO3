@@ -1,5 +1,15 @@
 import React from 'react';
-import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, SafeAreaView, Platform, StatusBar } from 'react-native';
+import { 
+  View, 
+  Text, 
+  StyleSheet, 
+  FlatList, 
+  Image, 
+  TouchableOpacity,
+  SafeAreaView, 
+  Platform, 
+  StatusBar 
+} from 'react-native';
 import { Entypo } from '@expo/vector-icons';
 
 const FAV_DATA = [
@@ -10,7 +20,8 @@ const FAV_DATA = [
   { id: '5', title: 'Pepsi Can', price: '$4.99', weight: '330ml, Price', img: require('../assets/pepsi.png') },
 ];
 
-export default function FavouriteScreen() {
+// Thêm navigation vào tham số để có thể sử dụng lệnh điều hướng
+export default function FavouriteScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.safeArea}>
       <Text style={styles.header}>Favorurite</Text>
@@ -33,11 +44,15 @@ export default function FavouriteScreen() {
               </View>
             </View>
           )}
-          contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 0 }}
+          contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 20 }}
         />
 
         <View style={styles.footer}>
-          <TouchableOpacity style={styles.addBtn}>
+          {/* Nút Add All To Cart được gắn sự kiện điều hướng sang màn hình OrderError */}
+          <TouchableOpacity 
+            style={styles.addBtn}
+            onPress={() => navigation.navigate('OrderError')} 
+          >
             <Text style={styles.addText}>Add All To Cart</Text>
           </TouchableOpacity>
         </View>
@@ -47,17 +62,45 @@ export default function FavouriteScreen() {
 }
 
 const styles = StyleSheet.create({
-  safeArea: { flex: 1, backgroundColor: 'white', paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0 },
-  header: { fontSize: 18, fontWeight: 'bold', textAlign: 'center', paddingVertical: 15, borderBottomWidth: 0.5, borderColor: '#E2E2E2' },
+  safeArea: { 
+    flex: 1, 
+    backgroundColor: 'white', 
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0 
+  },
+  header: { 
+    fontSize: 18, 
+    fontWeight: 'bold', 
+    textAlign: 'center', 
+    paddingVertical: 15, 
+    borderBottomWidth: 0.5, 
+    borderColor: '#E2E2E2' 
+  },
   container: { flex: 1 },
-  favItem: { flexDirection: 'row', alignItems: 'center', paddingVertical: 15, borderBottomWidth: 0.5, borderColor: '#E2E2E2' },
+  favItem: { 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    paddingVertical: 15, 
+    borderBottomWidth: 0.5, 
+    borderColor: '#E2E2E2' 
+  },
   img: { width: 45, height: 45, resizeMode: 'contain' },
   info: { flex: 1, marginLeft: 20 },
   title: { fontSize: 16, fontWeight: 'bold', color: '#181725' },
   weight: { color: '#7C7C7C', fontSize: 13 },
   right: { flexDirection: 'row', alignItems: 'center' },
   price: { fontSize: 16, fontWeight: 'bold', color: '#181725' },
-  footer: { paddingHorizontal: 20, paddingTop: 10, paddingBottom: 90 },
-  addBtn: { backgroundColor: '#53B175', height: 65, borderRadius: 18, justifyContent: 'center', alignItems: 'center' },
+  footer: { 
+    paddingHorizontal: 20, 
+    paddingTop: 10, 
+    paddingBottom: Platform.OS === 'ios' ? 100 : 90, // Để tránh bị đè bởi Bottom Tab Bar
+    backgroundColor: 'white' 
+  },
+  addBtn: { 
+    backgroundColor: '#53B175', 
+    height: 65, 
+    borderRadius: 18, 
+    justifyContent: 'center', 
+    alignItems: 'center' 
+  },
   addText: { color: 'white', fontWeight: 'bold', fontSize: 18 }
 });

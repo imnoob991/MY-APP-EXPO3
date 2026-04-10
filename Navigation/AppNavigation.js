@@ -4,19 +4,31 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
 import { Ionicons, Feather } from '@expo/vector-icons';
 
-// Import các màn hình từ thư mục screens
+// Import các màn hình
 import HomeScreen from '../screens/HomeScreen';
 import ExploreScreen from '../screens/ExploreScreen';
 import CartScreen from '../screens/CartScreen';
 import FavouriteScreen from '../screens/FavouriteScreen';
-// Giả định bạn có các file này, nếu chưa có hãy tạo file trống để tránh lỗi
-const AccountScreen = () => <></>; 
-import FilterScreen from '../screens/FilterScreen'; // Bạn cần tạo file này cho ảnh số 2
+import OrderSuccessScreen from '../screens/OrderSuccessScreen';
+import FilterScreen from '../screens/FilterScreen';
+import OrderErrorScreen from '../screens/OrderErrorScreen';
+import AccountScreen from '../screens/AccountScreen';
+import BeveragesScreen from '../screens/BeveragesScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
+const ExploreStack = createNativeStackNavigator();
 
-// 1. Định nghĩa bộ khung Tab Bottom
+// 1. Tạo Stack riêng cho nhánh Explore để ẩn Beverages khỏi Tab Bar
+function ExploreStackGroup() {
+  return (
+    <ExploreStack.Navigator screenOptions={{ headerShown: false }}>
+      <ExploreStack.Screen name="ExploreMain" component={ExploreScreen} />
+      <ExploreStack.Screen name="Beverages" component={BeveragesScreen} />
+    </ExploreStack.Navigator>
+  );
+}
+
 function MainTabs() {
   return (
     <Tab.Navigator
@@ -35,7 +47,7 @@ function MainTabs() {
           fontSize: 12,
           fontWeight: '600',
         },
-        tabBarIcon: ({ color, size, focused }) => {
+        tabBarIcon: ({ color }) => {
           let iconName;
           if (route.name === 'Shop') iconName = 'storefront-outline';
           else if (route.name === 'Explore') iconName = 'search';
@@ -50,33 +62,49 @@ function MainTabs() {
       })}
     >
       <Tab.Screen name="Shop" component={HomeScreen} />
-      <Tab.Screen name="Explore" component={ExploreScreen} />
+      
+      {/* 2. Thay ExploreScreen bằng ExploreStackGroup */}
+      <Tab.Screen name="Explore" component={ExploreStackGroup} />
+      
       <Tab.Screen name="Cart" component={CartScreen} />
       <Tab.Screen name="Favourite" component={FavouriteScreen} />
       <Tab.Screen name="Account" component={AccountScreen} />
+      
+      {/* ĐÃ XÓA Tab.Screen Beverages ở đây để không bị thừa nút */}
     </Tab.Navigator>
   );
 }
 
-// 2. Định nghĩa Stack chính (Chứa Tabs và các màn hình phụ)
 export default function AppNavigation() {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {/* Màn hình chính là các Tabs */}
         <Stack.Screen name="MainTabs" component={MainTabs} />
         
-        {/* Các màn hình phụ không hiện Tab Bar (như Filters) */}
         <Stack.Screen 
           name="Filters" 
           component={FilterScreen} 
           options={{ 
-            animation: 'slide_from_bottom', // Hiệu ứng mở từ dưới lên như ảnh
+            animation: 'slide_from_bottom',
             presentation: 'modal' 
           }} 
         />
-        
-        {/* Bạn có thể thêm ProductDetailScreen ở đây nếu cần */}
+        <Stack.Screen
+          name="OrderError" 
+          component={OrderErrorScreen} 
+          options={{ 
+            presentation: 'transparentModal',
+            animation: 'fade',
+          }} 
+        />
+
+        <Stack.Screen 
+          name="OrderSuccess" 
+          component={OrderSuccessScreen} 
+          options={{ 
+            animation: 'fade',
+          }} 
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
